@@ -1,7 +1,7 @@
 import { Container } from "inversify"
 import "reflect-metadata"
 import {
-    AdjacentMinesInterface,
+    AdjacentMinesInterface, AutoDiscoverMinesInterface,
     CommandBusInterface, CommandHandlerInterface,
     CommandListenerInterface, EventBusInterface, FactoryInterface,
     GameUIInterface,
@@ -19,6 +19,7 @@ import {EventBus} from "../Bus/EventBus";
 import {GridFactoryService} from "../Service/Factory/GridFactoryService";
 import {ClearThePositionCommandHandlerService} from "../Service/CommandHandler/ClearThePositionCommandHandlerService";
 import {AdjacentMinesService} from "../Service/AdjacentMinesService";
+import {AutoDiscoverMinesService} from "../Service/AutoDiscoverMinesService";
 
 const container = new Container({skipBaseClassChecks: true});
 
@@ -36,6 +37,7 @@ container.bind<FactoryInterface>(TYPES.GridFactory).to(GridFactoryService).inSin
 // service
 container.bind<ServiceInterface>(TYPES.RandomMines).to(RandomMinesService).inSingletonScope();
 container.bind<AdjacentMinesInterface>(TYPES.AdjacentMines).to(AdjacentMinesService).inSingletonScope();
+container.bind<AutoDiscoverMinesInterface>(TYPES.AutoDiscoverMines).to(AutoDiscoverMinesService).inSingletonScope();
 
 // Command handler
 container.bind<CommandHandlerInterface>(TYPES.GenerateANewGridCommandHandler).to(GenerateANewGridCommandHandlerService).inSingletonScope();

@@ -1,5 +1,5 @@
 import {
-    AdjacentMinesInterface,
+    AdjacentMinesInterface, AutoDiscoverMinesInterface,
     CellInterface,
     CommandHandlerInterface,
     EventBusInterface,
@@ -13,10 +13,16 @@ export class ClearThePositionCommandHandler implements CommandHandlerInterface{
 
     private readonly _eventBus: EventBusInterface;
     private readonly _adjacentMines: AdjacentMinesInterface;
+    private readonly _autoDiscoverMines: AutoDiscoverMinesInterface;
 
-    constructor(eventBus: EventBusInterface, adjacentMines: AdjacentMinesInterface) {
+    constructor(
+        eventBus: EventBusInterface,
+        adjacentMines: AdjacentMinesInterface,
+        autoDiscoverMines: AutoDiscoverMinesInterface
+    ) {
         this._eventBus = eventBus;
         this._adjacentMines = adjacentMines;
+        this._autoDiscoverMines = autoDiscoverMines;
     }
 
     handle(command: ClearThePositionCommand): void {
@@ -31,6 +37,9 @@ export class ClearThePositionCommandHandler implements CommandHandlerInterface{
             grid
         );
         cellDiscover.setNumberOfMinesAdjacent(countMinesAdjacent);
+        if (countMinesAdjacent === 0) {
+            this._autoDiscoverMines.autoDiscover(x, y, grid);
+        }
 
         this._eventBus.emit('GridUpdatedEvent', new GridUpdatedEvent(command.getGrid()));
     }

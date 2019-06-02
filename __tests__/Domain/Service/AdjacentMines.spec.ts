@@ -90,7 +90,7 @@ describe('adjacent mines service', () => {
         cells.push(new CellModel(0, 2, true));
         cells.push(new CellModel(1, 2, true));
         cells.push(new CellModel(2, 2, true));
-        let grid: GridInterface = new GridModel(8, cells);
+        let grid: GridInterface = new GridModel(3, cells);
 
         // service.
         let adjacentMines = new AdjacentMines();

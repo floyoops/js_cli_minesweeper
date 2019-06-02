@@ -58,8 +58,13 @@ export interface ServiceInterface {
 
 export interface AdjacentMinesInterface{
     countMines(x: number, y: number, grid: GridInterface): number;
+    getCellsAdjacent(x: number, y: number, grid: GridInterface): CellInterface[];
 }
 
 export interface ValidatorInterface {
     isValid(): boolean
+}
+
+export interface AutoDiscoverMinesInterface {
+    autoDiscover(x: number, y: number, grid: GridInterface): void;
 }

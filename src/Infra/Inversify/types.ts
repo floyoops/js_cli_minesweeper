@@ -9,7 +9,8 @@ const TYPES = {
     CellFactory: Symbol.for('CellFactory'),
     GridFactory: Symbol.for('GridFactory'),
     RandomMines: Symbol.for('RandomMines'),
-    AdjacentMines: Symbol.for('AdjacentMines')
+    AdjacentMines: Symbol.for('AdjacentMines'),
+    AutoDiscoverMines: Symbol.for('AutoDiscoverMines')
 };
 
 export { TYPES }
