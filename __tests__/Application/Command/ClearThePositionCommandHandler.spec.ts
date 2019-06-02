@@ -1,12 +1,13 @@
 import {RandomMines} from "../../../src/Domain/Service/RandomMines";
 import {CellFactory} from "../../../src/Domain/Factory/CellFactory";
 import {GridFactory} from "../../../src/Domain/Factory/GridFactory";
-import {EventBusInterface, GridInterface} from "../../../src/Domain/interfaces";
+import {CellInterface, EventBusInterface, GridInterface} from "../../../src/Domain/interfaces";
 import {ClearThePositionCommand} from "../../../src/Application/Command/ClearThePosition/ClearThePositionCommand";
 import {ClearThePositionCommandHandler} from "../../../src/Application/Command/ClearThePosition/ClearThePositionCommandHandler";
 import {GridUpdatedEvent} from "../../../src/Domain/Event/GridUpdatedEvent";
 import {CommandHandlerException} from "../../../src/Domain/Exception/CommandHandlerException";
 import {AdjacentMines} from "../../../src/Domain/Service/AdjacentMines";
+import {AutoDiscoverMines} from "../../../src/Domain/Service/AutoDiscoverMines";
 
 const EventBusMock = jest.fn<EventBusInterface, []>(() => ({
     emit: jest.fn(),
@@ -21,12 +22,13 @@ describe('clear the position command handler', () => {
         let cellFactory = new CellFactory();
         let gridFactory = new GridFactory(cellFactory, randomMines);
         let adjacentMines = new AdjacentMines();
+        let autoDiscoverMines = new AutoDiscoverMines(adjacentMines);
         let eventBus: EventBusInterface = new EventBusMock();
         let grid: GridInterface = gridFactory.create(5, 1);
 
         // handle
         let command = new ClearThePositionCommand(1, 1, grid);
-        let commandHandler = new ClearThePositionCommandHandler(eventBus, adjacentMines);
+        let commandHandler = new ClearThePositionCommandHandler(eventBus, adjacentMines, autoDiscoverMines);
         commandHandler.handle(command);
 
         // expect
@@ -35,9 +37,13 @@ describe('clear the position command handler', () => {
             'GridUpdatedEvent',
             expectedEvent
         )
-        expect(grid.getCells()[0].isDiscover()).toBe(false);
-        expect(grid.getCells()[6].isDiscover()).toBe(true);
-        expect(grid.getCells()[20].isDiscover()).toBe(false);
+        let countDiscover = 0;
+        grid.getCells().forEach((cell: CellInterface) => {
+            if (cell.isDiscover() === true ) {
+                countDiscover++
+            }
+        })
+        expect(countDiscover).toBeGreaterThan(0);
     })
 
     it ('Exception on cell not found', () => {
@@ -46,12 +52,13 @@ describe('clear the position command handler', () => {
         let cellFactory = new CellFactory();
         let gridFactory = new GridFactory(cellFactory, randomMines);
         let adjacentMines = new AdjacentMines();
+        let autoDiscoverMines = new AutoDiscoverMines(adjacentMines);
         let eventBus: EventBusInterface = new EventBusMock();
         let grid: GridInterface = gridFactory.create(5, 1);
 
         // handle
         let command = new ClearThePositionCommand(0, 7, grid);
-        let commandHandler = new ClearThePositionCommandHandler(eventBus, adjacentMines);
+        let commandHandler = new ClearThePositionCommandHandler(eventBus, adjacentMines, autoDiscoverMines);
         let expectedException = null;
         try {
             commandHandler.handle(command);
