@@ -15,6 +15,7 @@ export interface CommandBusInterface {
 export interface CommandInterface {
 }
 export interface CommandListenerInterface {
+    listen(): void
 }
 export interface CommandHandlerInterface {
     handle(command: CommandInterface): void

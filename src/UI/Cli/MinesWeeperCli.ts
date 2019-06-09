@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {
-    CommandBusInterface,
+    CommandBusInterface, CommandListenerInterface,
     EventBusInterface,
     GameUIInterface, GridInterface,
     RenderMinesWeeperInterface
@@ -20,16 +20,19 @@ export class MinesWeeperCli implements GameUIInterface{
 
     private readonly _commandBus: CommandBusInterface;
     private readonly _eventBus: EventBusInterface;
+    private readonly _commandListener: CommandListenerInterface;
     private readonly _render: RenderMinesWeeperInterface;
     private readonly _rl: ReadLine;
 
     constructor(
         @inject(TYPES.CommandBus) commandBus: CommandBusInterface,
         @inject(TYPES.EventBus) eventBus: EventBusInterface,
+        @inject(TYPES.CommandListener) commandListener: CommandListenerInterface,
         @inject(TYPES.RenderMinesWeeper) render: RenderMinesWeeperInterface,
     ) {
         this._commandBus = commandBus;
         this._eventBus = eventBus;
+        this._commandListener = commandListener;
         this._render = render;
         this._rl = readline.createInterface({
             input: process.stdin,
@@ -38,7 +41,10 @@ export class MinesWeeperCli implements GameUIInterface{
     }
 
     public start(): void {
-        // listen and refresh the vue grid.
+        // listen the command from commandBus.
+        this._commandListener.listen();
+
+        // listen and refresh the vue grid from the eventBus.
         this._eventBus.on('GridGeneratedEvent', (event: GridGeneratedEvent) => {
             let grid: GridInterface = event.getGrid();
             this.clearScreen();

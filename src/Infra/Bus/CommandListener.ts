@@ -21,10 +21,9 @@ export class CommandListener implements CommandListenerInterface{
         this._commandBus = commandBus;
         this._generateANewGridCommandHandler = generateANewGridCommandHandler;
         this._clearThePositionCommandHandler = clearThePositionCommandHandler;
-        this.listen();
     }
 
-    private listen(): void {
+    public listen(): void {
         this._commandBus.on('GenerateANewGridCommand', (cmd: GenerateANewGridCommand) => {
             this._generateANewGridCommandHandler.handle(cmd)
         })
